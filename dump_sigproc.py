@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 read_header('gallery/ValidHandle.h')
-prodv = 'std::vector<raw::RawDigit>'
+prodv = 'std::vector<recob::Wire>'
 classes = [prodv]
 provide_list(classes)
 
