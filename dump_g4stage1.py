@@ -2,6 +2,7 @@ from argparse import ArgumentParser as ap
 import ROOT as RT
 from gallery_utils import read_header, provide_list
 import numpy as np
+import matplotlib.pyplot as plt
 
 read_header('gallery/ValidHandle.h')
 mcpartsv = 'std::vector<simb::MCParticle>'
@@ -12,6 +13,8 @@ if __name__ == '__main__':
   parser = ap()
   parser.add_argument('-f', type=str, required=True)
   parser.add_argument('-n', type=int, default=-1)
+
+  parser.add_argument('--vis', action='store_true')
 
   args = parser.parse_args()
   
@@ -32,3 +35,18 @@ if __name__ == '__main__':
     print(f'\tEnd Position: {part.EndPosition().X():.2f}, '
           f'{part.EndPosition().Y():.2f}, {part.EndPosition().Z():.2f}')
     print(f'\tEnd Process: {part.EndProcess()}')
+
+    if args.vis:
+      npts = part.NumberTrajectoryPoints()
+      xs = np.array([part.Position(i).X() for i in range(npts)])
+      ys = np.array([part.Position(i).Y() for i in range(npts)])
+      zs = np.array([part.Position(i).Z() for i in range(npts)])
+
+      fig, axs = plt.subplots(2, 1, sharex=True)
+      axs[0].scatter(zs, xs)
+      axs[1].scatter(zs, ys)
+      plt.xlabel('Z [cm]')
+      axs[0].set_ylabel('X [cm]')
+      axs[1].set_ylabel('Y [cm]')
+      axs[0].set_title(f'Event {i} Beam G4 Trajectory')
+      plt.show()
